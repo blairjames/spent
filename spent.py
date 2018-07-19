@@ -49,8 +49,11 @@ class Spencer:
             res = await self.launch_reqests()
             urls = res[0]
             ips = res[1]
-            [print(u+" "+i) for i in ips for u in urls
-             if not "<p>HTTP Error 400. The request URL is invalid.</p>" in i]
+            #BLOCKS
+            [print("\n--------------------------------------------------------------------------------\n"
+             "URL: " + u+" "+i)
+             for i in ips for u in urls
+             if not "<p>HTTP Error 400. The request URL is invalid.</p>" in i and "wsdl" in i.lower()]
         except Exception as e:
             print("controller: " + str(e))
 
@@ -69,6 +72,7 @@ class Spencer:
         print(" \__ \|  _/| _> |   | | | ")
         print(" <___/|_|  |___>|_\_| |_| ")
         print("\nSharePoint ENumeration Tool")
+        print("   spent@blairjames.com")
         print("\nProcessing requests..")
 
 def main():
