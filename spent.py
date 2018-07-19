@@ -2,8 +2,9 @@
 
 import aiohttp
 import asyncio
+import aiofiles
 import os
-from typing import Generator
+from typing import Generator, List
 
 
 class Spencer:
@@ -18,11 +19,11 @@ class Spencer:
         file.close()
         return lines
 
-    async def build_urls(self) -> Generator:
+    async def build_urls(self) -> List:
         try:
             paths = await self.read_list()
             paths = (p for p in paths if p)
-            urls = (self.domain + p for p in paths)
+            urls = [self.domain + p for p in paths]
             return urls
         except Exception as e:
             print("build_urls: " + str(e))
@@ -35,22 +36,23 @@ class Spencer:
         except Exception as e:
             print("send_req: " + str(e))
 
-    async def launch_reqests(self):
+    async def launch_reqests(self) -> List:
         try:
             urls = await self.build_urls()
             res = [await self.send_req(t) for t in urls]
-            return res
+            return [urls, res]
         except Exception as e:
             print("launch_requests: " + str(e))
 
     async def controller(self):
         try:
-            finish = await self.launch_reqests()
-            [print(f) for f in finish]
-             #if not "<p>HTTP Error 400. The request URL is invalid.</p>" in f]
-
+            res = await self.launch_reqests()
+            urls = res[0]
+            ips = res[1]
+            [print(u+" "+i) for i in ips for u in urls
+             if not "<p>HTTP Error 400. The request URL is invalid.</p>" in i]
         except Exception as e:
-            print("parse_response: " + str(e))
+            print("controller: " + str(e))
 
     def clear_log_file(self):
         try:
@@ -62,10 +64,10 @@ class Spencer:
     def present(self):
         os.system("clear")
         self.clear_log_file()
-        print(" ___  ___  ___  _ _  ___ ")
-        print("/ __>| . \| __>| \ ||_ _|")
-        print("\__ \|  _/| _> |   | | | ")
-        print("<___/|_|  |___>|_\_| |_| ")
+        print("  ___  ___  ___  _ _  ___ ")
+        print(" / __>| . \| __>| \ ||_ _|")
+        print(" \__ \|  _/| _> |   | | | ")
+        print(" <___/|_|  |___>|_\_| |_| ")
         print("\nSharePoint ENumeration Tool")
         print("\nProcessing requests..")
 
