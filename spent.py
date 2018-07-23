@@ -2,6 +2,7 @@
 
 import aiohttp
 import asyncio
+import concurrent.futures
 import aiofiles
 import os
 from typing import Generator, List
@@ -9,7 +10,7 @@ from typing import Generator, List
 
 class Spencer:
     def __init__(self):
-        self.domain: str = "https://qed.qld.gov.au/"
+        self.domain: str = "https://impact.edu.au/"
         self.wordlist_path: str = os.getcwd() + "/sharepoint_list.txt"
         self.log_path: str = os.getcwd() + "/last_log.txt"
 
@@ -48,12 +49,18 @@ class Spencer:
         try:
             res = await self.launch_reqests()
             urls = res[0]
-            ips = res[1]
-            #BLOCKS
-            [print("\n--------------------------------------------------------------------------------\n"
-             "URL: " + u+" "+i)
-             for i in ips for u in urls
-             if not "<p>HTTP Error 400. The request URL is invalid.</p>" in i and "wsdl" in i.lower()]
+            cont = res[1]
+            cont = [c for c in cont]
+
+            output = [("\n--------------------------------------------------------------------------------\n"
+             "URL: " + u + " \n********* This data should not be visible to users *********\n" + i)
+             for i in cont for u in urls
+             if not "<p>HTTP Error 400. The request URL is invalid.</p>" in i]
+
+            with open(self.log_path, "a") as file:
+                file.writelines(output)
+            [print(o) for o in output]
+
         except Exception as e:
             print("controller: " + str(e))
 
@@ -64,16 +71,24 @@ class Spencer:
         except Exception as e:
             print("Error! in clear_log_file: " + str(e))
 
+    def lint(self, input: str):
+        print(input)
+        with open(self.log_path, "a") as file:
+            file.write(input + "\n")
+            file.close()
+
     def present(self):
         os.system("clear")
         self.clear_log_file()
-        print("  ___  ___  ___  _ _  ___ ")
-        print(" / __>| . \| __>| \ ||_ _|")
-        print(" \__ \|  _/| _> |   | | | ")
-        print(" <___/|_|  |___>|_\_| |_| ")
-        print("\nSharePoint ENumeration Tool")
-        print("   spent@blairjames.com")
-        print("\nProcessing requests..")
+        self.lint("  ___  ___  ___  _ _  ___ ")
+        self.lint(" / __>| . \| __>| \ ||_ _|")
+        self.lint(" \__ \|  _/| _> |   | | | ")
+        self.lint(" <___/|_|  |___>|_\_| |_| ")
+        self.lint("\nSharePoint ENumeration Tool")
+        self.lint("   spent@blairjames.com")
+        self.lint("\nSource: git clone github.com/blairjames/spent")
+        self.lint("\nProcessing requests..")
+
 
 def main():
     try:
