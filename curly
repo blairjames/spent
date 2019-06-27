@@ -1,1 +1,0 @@
-curl -v "https://qed.qld.gov.au/_vti_bin/dws.asmx" -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36" -H "Content-Type: text/xml" -H "Host: www.qed.qld.gov.au" -H "SOAPAction: \"https://qed.qld.gov.au/_vti_bin/dws.asmx\"" --data-binary @request.xml 
