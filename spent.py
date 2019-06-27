@@ -10,7 +10,7 @@ from typing import Generator, List
 
 class Spencer:
     def __init__(self):
-        self.domain: str = "https://impact.edu.au/"
+        self.domain: str = ""
         self.wordlist_path: str = os.getcwd() + "/sharepoint_list.txt"
         self.log_path: str = os.getcwd() + "/last_log.txt"
 
